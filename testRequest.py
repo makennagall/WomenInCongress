@@ -10,4 +10,5 @@ header = {"x-api-key": API_KEY}
 params = {"format": 'json'}
 data = requests.get(url, params=params, headers=header)
 print(data.status_code)
-print(data.json())
+if data.status_code == 200:
+	print(data.json())
