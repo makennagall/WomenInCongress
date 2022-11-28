@@ -10,4 +10,4 @@ header = {"x-api-key": API_KEY}
 params = {"format": 'json'}
 data = requests.get(url, params=params, headers=header)
 print(data.status_code)
-print(data)
+print(data.json())
