@@ -1,0 +1,29 @@
+dictionary comments:
+
+
+'''
+print(data['bills'][3]['url'])
+print("******")
+tempURL = data['bills'][3]['url'].split("?")[0]
+print(tempURL)
+newdata = requests.get(tempURL, params=params, headers=header).json()
+print(newdata['bill'].keys())
+data = requests.get(tempURL + '/text', params=params, headers=header).json()
+print()
+print(data.keys())
+print(data['textVersions'])
+print(data['textVersions'][0]['formats'])
+
+url = 'https://api.congress.gov/v3/bill/117/'
+print(data['bills'][0].keys())
+dict_keys(['congress', 'latestAction', 'number', 'originChamber',
+'originChamberCode', 'title', 'type', 'updateDate',
+'updateDateIncludingText', 'url'])
+
+url = 'https://api.congress.gov/v3/bill/117/s/4698'
+print(data['bill'].keys())
+dict_keys(['actions', 'committees', 'congress', 'cosponsors',
+'introducedDate', 'latestAction', 'number', 'originChamber',
+'policyArea', 'sponsors', 'subjects', 'textVersions', 'title',
+'titles', 'type', 'updateDate', 'updateDateIncludingText'])
+'''
