@@ -63,13 +63,14 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
     print(data.status_code)
 #while the status code is 429, get a new API_KEY from the list and make the request again
     while data.status_code == 429:
-        data = API_error(CURR_INDEX, API_KEY_LIST, url)
+        data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
+        print(data)
 #200 indicates that the data was successfully retreived:
     if data.status_code == 200:
         data = data.json()
 #sometimes when an API_KEY reaches maximum requests, it returns a dictionary containing the key ['error']:
         while 'error' in data:
-            data = API_error(CURR_INDEX, API_KEY_LIST, url)
+            data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
 #test each bill in ['bills'] using test_title:
         for bill in data['bills']:
             if test_title(bill['title']) == True:
@@ -84,13 +85,13 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
                 newdata = requests.get(tempURL, params=params, headers=header)
 #needs a new API key (maxed out on requests):
                 while newdata.status_code == 429:
-                    newdata = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
+                    newdata, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
 #status code 200 indicates data successfully retreived:
                 if newdata.status_code == 200:
                     newdata = newdata.json()
 #needs a new API key (maxed out on requests):
                     while 'error' in data:
-                        newdata = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
+                        newdata, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
 #if bill key is contained in data, create a list of bill info using CreateList function:
                     if 'bill' in newdata:
                         billInfo = newdata['bill']
@@ -98,11 +99,11 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
 #access new url to get url of bill in pdf form (if available):
                 pdfdata = requests.get(tempURL + '/text', params=params, headers=header)
                 if pdfdata.status_code == 429:
-                    pdf_data = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
+                    pdf_data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
                 if pdfdata.status_code == 200:
                     pdfdata = pdfdata.json()
                     while 'error' in pdfdata:
-                        pdf_data = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
+                        pdf_data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, tempURL)
 #initialize added PDF variable to False
                     addedPDF = False
                     if 'textVersions' in pdfdata:
@@ -138,13 +139,13 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
         data = requests.get(newURL, params=params, headers=header)
         print(data.status_code)
         while data.status_code == 429:
-            data = API_error(CURR_INDEX, API_KEY_LIST, url)
+            data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
 #200 indicates that the data was successfully retreived:
         if data.status_code == 200:
             data = data.json()
 #sometimes when an API_KEY reaches maximum requests, it returns a dictionary containing the key ['error']:
             while 'error' in data:
-                data = API_error(CURR_INDEX, API_KEY_LIST, url)
+                data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
         return (CURR_INDEX, data)
 
 def test_title(title):
@@ -191,40 +192,46 @@ def createList(billDict):
         finalList.append('NA')
         finalList.append('NA')
     return finalList
-    
+
 def artificial_pagination(url):
 #splits the url to access the offset number
 #returns a new url with the offset advanced by 20
     print(url)
-    offset = url.split("=")[1:]
-    print("offset: ")
-    offset = (''.join(str(e) for e in offset))
-    print(offset)
-    beginning = url.split("=")[0] + '='
-    print("beginning")
-    print(beginning)
-    ending = offset.split("&")[1:]
-    ending = '&' + (''.join(str(e) for e in ending))
-    print("ending")
-    print(ending)
-    offset = offset.split("&")[0]
-    print("offset: ")
-    print(offset)
+    if "offset" in url:
+        offset = url.split("=")[1:]
+        print("offset: ")
+        offset = (''.join(str(e) for e in offset))
+        print(offset)
+        beginning = url.split("=")[0] + '='
+        print("beginning")
+        print(beginning)
+        ending = offset.split("&")[1:]
+        ending = '&' + (''.join(str(e) for e in ending))
+        print("ending")
+        print(ending)
+        offset = offset.split("&")[0]
+        print("offset: ")
+        print(offset)
 #adding 20 to the offset generates the next URL consistent with what is contained in data['pagination']['next']
-    newoffset = int(offset) + 20
-    print(offset)
-    newURL = beginning + str(newoffset) + ending
-    print(newURL)
-    return newURL
+        newoffset = int(offset) + 20
+        print(offset)
+        newURL = beginning + str(newoffset) + ending
+        print(newURL)
+        return newURL
+    else:
+        sys.exit("bad url, cannot go to next")
+
 def API_error(CURR_INDEX, API_KEY_LIST, url):
     if CURR_INDEX < len(API_KEY_LIST):
         CURR_INDEX+= 1
         print("new api key at index " + str(CURR_INDEX) + ": "+ API_KEY_LIST[CURR_INDEX])
+        params = {"format": 'json'}
         header = {"x-api-key": API_KEY_LIST[CURR_INDEX]}
-        data = requests.get(url + '/text', params=params, headers=header).json()
+        data = requests.get(url, params=params, headers=header)
+        print(data)
         print(url)
         print("\n\n\n")
-        return data
+        return (data, CURR_INDEX)
     else:
         print("ran out of api keys, left off at url: " + url + "current congress: " + str(current))
         print("\n\n\n")
