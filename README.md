@@ -13,7 +13,7 @@ WomenPerSession.csv contains tidied data from https://cawp.rutgers.edu/facts/lev
 AllBillsNumbers.csv and AllBillsNumbers.xlsx contains how many bills with the key terms and how many total bills were accessed for each congressional session.
 
 AllOutputs.csv and AllOutput.xlsx contains the output for the bills that contained the key terms for all available congressional session in the form:
-  title|congress|sponsors|sponsor's party|latest action| date (maybe separated into m, d, y)| pdfURL
+    title|congress|sponsors|sponsor's party|latest action| date (maybe separated into m, d, y)| pdfURL
   
 dictionary_comments contains notes on what dictionary keys different request responses contained
 
