@@ -44,7 +44,7 @@ AllOutput <- mutate(AllOutput, DayMonth = format(as.Date(date), "%m-%d"))
 #y axis: Month and Day of Latest Update
 #color: Party that sponsored the bill
 plot_ly(data = AllOutput, type = "scatter", mode = "markers",
-        x = ~Latest.Action.Year, y = ~DayMonth, color = ~SponsorParty,
+        x = ~Latest.Action.Year, y = ~DayMonth, color = ~SponsorParty, legendgrouptitle = "Party",
         hoverinfo = 'text',
         text = ~paste("Title:", BillTitle, "<br>", "URL:", URL))
 
@@ -56,6 +56,6 @@ colnames(joinedData)
 plot_ly(data = joinedData, type = "scatter", mode = "markers",
         x = ~Congress, y = ~DayMonth, color = ~Total.Women,
         hoverinfo = 'text',
-        text = ~paste("Title:", BillTitle, "<br>", URL, "<br>Total Women: ", Total.Women))
+        text = ~paste("Title:", BillTitle, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor))
 
 
