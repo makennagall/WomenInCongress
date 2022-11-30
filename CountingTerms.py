@@ -13,7 +13,7 @@ def main():
     url = 'https://raw.githubusercontent.com/makennagall/WomenInCongress/main/AllOutputs.csv'
     data = urlopen(url)
     cr = csv.reader(codecs.iterdecode(data, "utf-8"))
-    colnames = ['Congress', 'House', 'Sponsor', 'Sponsor.Party', 'LatestAction', 'LatestActionMonth', 'LatestActionDay', 'LatestActionYear', 'URL', 'term']
+    colnames = ['title','Congress', 'House', 'Sponsor', 'Sponsor.Party', 'LatestAction', 'LatestActionMonth', 'LatestActionDay', 'LatestActionYear', 'URL', 'term']
     outputFile = open("termsCount.csv", "w")
     outputFile.write(','.join(str(e) for e in colnames))
     outputFile.write('\n')
