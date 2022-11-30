@@ -27,7 +27,7 @@ def main():
     countDict = createDictionary(0, TERMSLIST)
     for line in cr:
         for term in TERMSLIST:
-            if term in line[0]:
+            if term in line[0].lower():
                 line.append(term)
                 termDict[term].append(line)
                 countDict[term] = countDict[term] + 1
