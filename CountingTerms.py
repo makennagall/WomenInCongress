@@ -4,15 +4,21 @@ import csv
 import sys
 from urllib.request import urlopen
 import codecs
-TERMSLIST = ['woman', 'women', 'girl', 'transgender', 'nonbinary', 'pregnancy',
-            'pregnant', 'menstrual', 'reproduction', 'reproductive', 'birth', 'mother',
-            'female', 'feminine', ' lady ', 'ladies', 'widows', 'maternal', 'abortion',
-            'sex', 'daughters', 'wives', 'mom', 'domestic violence', 'ultrasound', 'gender',
-            'born', 'trans ', 'uterine', 'uterus', 'sisters']
+
 def main():
-    url = 'https://raw.githubusercontent.com/makennagall/WomenInCongress/main/AllOutputs.csv'
+    if length(sys.argv) != 3:
+        print("Please enter the url for the raw csv file and the file name containing the list of terms as a command line argument.")
+        sys.exit("Incorrect number of command line arguments.")
+    url = sys.argv[1]
     data = urlopen(url)
     cr = csv.reader(codecs.iterdecode(data, "utf-8"))
+    TERMSLIST_FILE = sys.argv[2]
+    TERMSLIST = []
+    for line in open(TERMSLIST_FILE, "r"):
+        if '\n' in line:
+            TERMSLIST.append(line[:-1])
+        else:
+            TERMSLIST.append(line)
     colnames = ['title','Congress', 'House', 'Sponsor', 'Sponsor.Party', 'LatestAction', 'LatestActionMonth', 'LatestActionDay', 'LatestActionYear', 'URL', 'term']
     outputFile = open("termsCountPipeSep.txt", "w")
     outputFile.write('|'.join(str(e) for e in colnames))
