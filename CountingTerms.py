@@ -6,7 +6,7 @@ from urllib.request import urlopen
 import codecs
 
 def main():
-    if length(sys.argv) != 3:
+    if len(sys.argv) != 3:
         print("Please enter the url for the raw csv file and the file name containing the list of terms as a command line argument.")
         sys.exit("Incorrect number of command line arguments.")
     url = sys.argv[1]

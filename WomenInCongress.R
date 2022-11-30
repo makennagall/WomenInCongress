@@ -69,7 +69,7 @@ colnames(termDataJoined)
 plot_ly(data = termDataJoined, type = "scatter", mode = "markers",
         x = ~LatestActionYear, y = ~DayMonth, color = ~term,
         hoverinfo = 'text',
-        text = ~paste("Title:", title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor))
+        text = ~paste("Title:", title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, "<br>Latest Action: ", LatestAction))
 
 frequency <- table(termDataJoined$term)
 sorted_frequency <- frequency %>% 
