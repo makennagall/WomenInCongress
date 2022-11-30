@@ -17,29 +17,34 @@ def main():
     outputFile = open("termsCountPipeSep.txt", "w")
     outputFile.write('|'.join(str(e) for e in colnames))
     outputFile.write('\n')
-    termDict = createDictionary()
+    termDict = createDictionary([])
+    countDict = createDictionary(0)
     for line in cr:
         for term in TERMSLIST:
             if term in line[0]:
                 line.append(term)
                 termDict[term].append(line)
+                countDict[term] = countDict[term] + 1
                 outputFile.write('|'.join(str(e) for e in line))
                 outputFile.write('\n')
                 line = line[:-1]
-
-    #print(termDict)
-    printOutput(termDict)
-
+    print("countDict")
+    print(countDict)
+    print("birth control bills:")
+    #printOutput(termDict)
+    for line in cr:
+        if 'birth control' in line[0]:
+            print(line)
 def printOutput(termDict):
     for term in TERMSLIST:
         print(term)
         for item in termDict[term]:
             print(item)
         print("\n\n")
-def createDictionary():
+def createDictionary(initialValue):
     termDict = {}
     for term in TERMSLIST:
-        termDict[term] = []
+        termDict[term] = initialValue
     return termDict
 
 #Execute Main:

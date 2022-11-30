@@ -8,20 +8,22 @@ BASE_LINK = 'https://api.congress.gov/v3/'
 #main:
 def main():
 #if the command line arguments contain a start and ending congressional session:
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 5:
         start = int(sys.argv[1])
         end = int(sys.argv[2])
         API_KEY_FILE = sys.argv[3]
+        TERMSLIST_FILE = sys.argv[4]
 #if the command line arguments only contains one congressional session:
-    elif len(sys.argv) == 3:
+    elif len(sys.argv) == 4:
         start = int(sys.argv[1])
         end = start
         API_KEY_FILE = sys.argv[2]
+        TERMSLIST_FILE = sys.argv[3]
 #if there are an incorrect number of command line arguments:
     else:
         print("\tCorrect Input Format Options:")
-        print("\t\t./WomenInCongress startCongress endCongress APIKeyFile")
-        print("\t\t./WomenInCongress onlyCongress APIKeyFile")
+        print("\t\t./WomenInCongress startCongress endCongress APIKeyFile TermListFile")
+        print("\t\t./WomenInCongress onlyCongress APIKeyFile TermListFIle")
         sys.exit("Incorrect number of arguments")
 #initialize an API_KEY_LIST
     API_KEY_LIST = []
@@ -31,6 +33,13 @@ def main():
             API_KEY_LIST.append(line[:-1])
         else:
             API_KEY_LIST.append(line)
+    TERMLIST = []
+    for line in open(TERMSLIST_FILE, "r"):
+        if '\n' in line:
+            TERMSLIST_LIST.append(line[:-1])
+        else:
+            TERMSLIST_LIST.append(line)
+
 #write file contains the information for bills that contain one of the terms in test_title
     writeFile = open('output' + str(start) + '.csv', 'w')
 #allBills is a file that contains the names of all bills that the program checks
@@ -150,13 +159,8 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
 
 def test_title(title):
     title = title.lower()
-    termsList = ['woman', 'women', 'girl', 'transgender', 'nonbinary', 'pregnancy',
-                'pregnant', 'menstrual', 'reproduction', 'reproductive', 'birth', 'mother',
-                'female', 'feminine', ' lady ', 'ladies', 'widows', 'maternal', 'abortion',
-                'sex', 'daughters', 'wives', 'mom', 'domestic violence', 'ultrasound', 'gender',
-                'born', 'trans ', 'uterine', 'uterus', 'sisters']
 #loops through the words in termsList and returns true if one of them is in the title
-    for term in termsList:
+    for term in TERMSLIST:
         if term in title:
             return True
 #if none of the terms is in the list, it returns False
