@@ -23,7 +23,8 @@ def main():
             if term in line[0]:
                 line.append(term)
                 termDict[term].append(line)
-                outputFile.write(','.join(str(e) for e in line))
+                outputFile.write("\"" + line[0] + "\"")
+                outputFile.write(','.join(str(e) for e in line[1:]))
                 outputFile.write('\n')
                 line = line[:-1]
 
