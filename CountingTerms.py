@@ -37,10 +37,10 @@ def main():
     print("countDict")
     print(countDict)
     print("birth control bills:")
-    #printOutput(termDict)
-    for line in cr:
-        if 'birth control' in line[0]:
-            print(line)
+    frequencyFile = open('frequency.csv', 'w')
+    frequencyFile.write("Term,Frequency\n")
+    for key in countDict:
+        frequencyFile.write(key + "," + str(countDict[key]) + "\n")
 def printOutput(termDict):
     for term in TERMSLIST:
         print(term)
