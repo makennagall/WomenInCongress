@@ -23,8 +23,8 @@ def main():
     outputFile = open("termsCountPipeSep.txt", "w")
     outputFile.write('|'.join(str(e) for e in colnames))
     outputFile.write('\n')
-    termDict = createDictionary([])
-    countDict = createDictionary(0)
+    termDict = createDictionary([], TERMSLIST)
+    countDict = createDictionary(0, TERMSLIST)
     for line in cr:
         for term in TERMSLIST:
             if term in line[0]:
@@ -36,18 +36,17 @@ def main():
                 line = line[:-1]
     print("countDict")
     print(countDict)
-    print("birth control bills:")
     frequencyFile = open('frequency.csv', 'w')
     frequencyFile.write("Term,Frequency\n")
     for key in countDict:
         frequencyFile.write(key + "," + str(countDict[key]) + "\n")
-def printOutput(termDict):
+def printOutput(termDict, TERMSLIST):
     for term in TERMSLIST:
         print(term)
         for item in termDict[term]:
             print(item)
         print("\n\n")
-def createDictionary(initialValue):
+def createDictionary(initialValue, TERMSLIST):
     termDict = {}
     for term in TERMSLIST:
         termDict[term] = initialValue
