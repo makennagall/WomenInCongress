@@ -1,0 +1,5 @@
+['woman', 'women', 'girl', 'transgender', 'nonbinary', 'pregnancy',
+            'pregnant', 'menstrual', 'reproduction', 'reproductive', 'birth', 'mother',
+            'female', 'feminine', ' lady ', 'ladies', 'widows', 'maternal', 'abortion',
+            'sex', 'daughters', 'wives', 'mom', 'domestic violence', 'ultrasound', 'gender',
+            'born', 'trans ', 'uterine', 'uterus', 'sisters']

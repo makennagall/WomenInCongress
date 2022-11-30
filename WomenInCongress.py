@@ -36,10 +36,10 @@ def main():
     TERMSLIST = []
     for line in open(TERMSLIST_FILE, "r"):
         if '\n' in line:
-            TERMSLIST_LIST.append(line[:-1])
+            TERMSLIST.append(line[:-1])
         else:
-            TERMSLIST_LIST.append(line)
-
+            TERMSLIST.append(line)
+    print(TERMSLIST)
 #write file contains the information for bills that contain one of the terms in test_title
     writeFile = open('outputNew' + str(start) + '.csv', 'w')
 #allBills is a file that contains the names of all bills that the program checks
