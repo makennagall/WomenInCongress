@@ -14,8 +14,8 @@ def main():
     data = urlopen(url)
     cr = csv.reader(codecs.iterdecode(data, "utf-8"))
     colnames = ['title','Congress', 'House', 'Sponsor', 'Sponsor.Party', 'LatestAction', 'LatestActionMonth', 'LatestActionDay', 'LatestActionYear', 'URL', 'term']
-    outputFile = open("termsCount.csv", "w")
-    outputFile.write(','.join(str(e) for e in colnames))
+    outputFile = open("termsCountPipeSep.txt", "w")
+    outputFile.write('|'.join(str(e) for e in colnames))
     outputFile.write('\n')
     termDict = createDictionary()
     for line in cr:
@@ -23,8 +23,7 @@ def main():
             if term in line[0]:
                 line.append(term)
                 termDict[term].append(line)
-                outputFile.write("\"" + line[0] + "\"" + ',')
-                outputFile.write(','.join(str(e) for e in line[1:]))
+                outputFile.write('|'.join(str(e) for e in line))
                 outputFile.write('\n')
                 line = line[:-1]
 
