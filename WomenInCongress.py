@@ -33,7 +33,7 @@ def main():
             API_KEY_LIST.append(line[:-1])
         else:
             API_KEY_LIST.append(line)
-    TERMLIST = []
+    TERMSLIST = []
     for line in open(TERMSLIST_FILE, "r"):
         if '\n' in line:
             TERMSLIST_LIST.append(line[:-1])
@@ -41,9 +41,9 @@ def main():
             TERMSLIST_LIST.append(line)
 
 #write file contains the information for bills that contain one of the terms in test_title
-    writeFile = open('output' + str(start) + '.csv', 'w')
+    writeFile = open('outputNew' + str(start) + '.csv', 'w')
 #allBills is a file that contains the names of all bills that the program checks
-    allBills = open("allBills" + str(start) +'.txt', 'w')
+    allBills = open("allBillsNew" + str(start) +'.txt', 'w')
 #CURR_INDEX is the index of the API_KEY_LIST being used
     CURR_INDEX = 0
 #set the initial nexURL:
@@ -53,17 +53,17 @@ def main():
 #while loop runs as long as check_for_next does not return False:
     while nextURL != False:
 #name checkBills outputs
-        (CURR_INDEX, data) = checkBills(start, end, nextURL, writeFile, CURR_INDEX, allBills, API_KEY_LIST)
+        (CURR_INDEX, data) = checkBills(start, end, nextURL, writeFile, CURR_INDEX, allBills, API_KEY_LIST, TERMSLIST)
 #name check_for_next outputs
         newCurrent, current, nextURL = check_for_next(data, current, end, allBills)
         if newCurrent == True:
 #if the program switched to testing a new congressional session, open new write files:
-            writeFile = open('output' + str(current) + '.csv', 'w')
-            allBills = open("allBills" + str(current) +'.txt', 'w')
+            writeFile = open('outputNew' + str(current) + '.csv', 'w')
+            allBills = open("allBillsNew" + str(current) +'.txt', 'w')
 
 
 #primary function that calls other functions:
-def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
+def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST, TERMSLIST):
     #make a request to get data from the url:
     response_format = 'json'
     header = {"x-api-key": API_KEY_LIST[CURR_INDEX]}
@@ -82,7 +82,7 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
             data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
 #test each bill in ['bills'] using test_title:
         for bill in data['bills']:
-            if test_title(bill['title']) == True:
+            if test_title(bill['title'], TERMSLIST) == True:
                 finalList = []
 #prints bills that contain a key term:
                 print("*****" + bill['title'])
@@ -157,7 +157,7 @@ def checkBills(current, end, url, file, CURR_INDEX, allBills, API_KEY_LIST):
                 data, CURR_INDEX = API_error(CURR_INDEX, API_KEY_LIST, url)
         return (CURR_INDEX, data)
 
-def test_title(title):
+def test_title(title, TERMSLIST):
     title = title.lower()
 #loops through the words in termsList and returns true if one of them is in the title
     for term in TERMSLIST:
