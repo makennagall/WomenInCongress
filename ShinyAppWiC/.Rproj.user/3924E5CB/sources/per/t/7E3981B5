@@ -1,0 +1,26 @@
+{
+    "id": "7E3981B5",
+    "path": "~/WomenInCongress/ShinyAppWiC/DemoApp.R",
+    "project_path": "DemoApp.R",
+    "type": "r_source",
+    "hash": "2409812501",
+    "contents": "",
+    "dirty": false,
+    "created": 1669843679597.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "33,11",
+        "scrollLine": "22"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1669844406,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1669844406,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,115 @@
+#“With ggplotly() by Plotly, you can convert
+#your ggplot2 figures into interactive ones powered by plotly.js”
+
+install.packages("plotly") # for interactive visuals
+install.packages("ggplot2") # for static visuals
+install.packages("tidyr") # for  tidying data
+install.packages("stringr") # for processing character strings
+install.packages("forcats") # for processing categorical data
+install.packages("dplyr")
+library(plotly)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(forcats)
+library(dplyr)
+#All packages above are part of tidyverse core
+#To install all packages that are part of tidyverse including:
+#ggplot2, dplyr, tidyr, readr, purrr, tibble, stringr, forcats
+install.packages("tidyverse")
+library(tidyverse)
+# AmesHousing Data, sales of residentail properties in Ames, Iowa 2006-2010:
+AmesHousing <- read.csv("https://raw.githubusercontent.com/kwaldenphd/plotly-intro-r/main/data/AmesHousing.csv")
+str(AmesHousing)
+AmesHousing <- read.csv("https://raw.githubusercontent.com/kwaldenphd/plotly-intro-r/main/data/AmesHousing.csv")
+my_ggplot <- ggplot(data=AmesHousing) + geom_point(mapping= aes(x=GrLivArea, y=SalePrice))
+#Two features added to the plot:
+#Dashboard that allows zoom in and out, rescaling the plot
+#Popup information when you hover over a datapoint
+ggplotly(my_ggplot)
+#Add complexity and color to each data point by building a type:
+my_ggplot <- ggplot(data=AmesHousing) + geom_point(mapping= aes(x=GrLivArea, y=SalePrice, color = BldgType))
+ggplotly(my_ggplot)
+#plotly allows you to click on a category in the key to remove that category from the plot
+#hovering over a data point shows x, y and building type (color)
+
+#USING GGPLOTLY:
+#plot_ly function allows us to access more advanced features in plotly
+plot_ly(data = AmesHousing, type = "scatter",  mode = "markers", x = ~GrLivArea, y = ~SalePrice, color = ~BldgType)
+#type = "scatter" tells plotly to make a scatterplot
+#mode = "markers" plots the data-points as hoverable dots rather than text labels or other characters
+#~ character is used in front of variables referenced in x, y, and color arguments
+#~ character is used to tell plot_ly to look for variable inside of data.frame supplied in data argument
+#If ~ is not used, plot_ly will look for global variables instead
+# %>% operator: used to build up graphics by adding layers
+#Example:
+plot_ly(data = AmesHousing) %>% 
+  add_trace(type = "scatter", mode = "markers", x = ~GrLivArea, y = ~SalePrice, color = ~BldgType) %>%
+  add_lines(x = ~GrLivArea, y = ~SalePrice, color = ~BldgType) 
+
+#Label each home sale using its property id, so when you hover over them it shows the PID
+#text argument can be used to change how plots are labeled
+plot_ly(data = AmesHousing, type = "scatter",
+        x = ~GrLivArea, y = ~SalePrice, color = ~BldgType,
+        text = ~PID)
+#Customize labels using HTML
+plot_ly(data = AmesHousing, type = "scatter",
+        x = ~GrLivArea, y = ~SalePrice, color = ~BldgType,
+        text = ~paste0("This home was built in: ", YearBuilt, "<br> It was last sold in: ", YrSold))
+#paste0 function is used to combine character strings and variables into a single string
+# < br > is the HTML code to begin a new line
+# < b > text < / b > bolds text in between the tags
+# < i > text < / i > italicizes text in between tags
+# x < sub > i < / sub > Adds subscript
+
+#use  hoverinfo = "text" to include the custom label and not default information
+plot_ly(data = AmesHousing, type = "scatter",
+        x = ~GrLivArea, y = ~SalePrice, color = ~BldgType,
+        hoverinfo = 'text',
+        text = ~paste("This home was built in:", YearBuilt, "<br>", "It was last sold in:", YrSold))
+
+prop = table(AmesHousing$HouseStyle)/nrow(AmesHousing)
+style = names(prop)
+colnames(AmesHousing)
+houses_by_style <- group_by(AmesHousing, HouseStyle)
+median_by_style <- summarize(houses_by_style, median = median(SalePrice, na.rm = TRUE))
+
+plot_ly() %>%
+  add_trace(type = "pie", labels = ~style, values = ~prop, textinfo = "percent", hoverinfo = 'text',
+        text = ~paste("House Style: ", style, "<br>", "Median for ", style, ": ", median_by_style$median))
+
+#ANIMATIONS:
+## Load the data
+states <- read.csv("https://raw.githubusercontent.com/kwaldenphd/plotly-intro-r/main/data/state_pops.csv")
+
+## Tidy the data
+states_long <- gather(states, key = "Year", value = "Population", 2:ncol(states))
+states_long$Year <- str_replace(string = states_long$Year, pattern = "X", replace = "")
+states_long$State <- str_replace(string = states_long$State, pattern = ".", replace = "")
+
+## Plotly animation
+plot_ly(data = states_long, type = "bar",
+        x = ~fct_reorder(State, Population), y = ~Population, frame = ~Year, showlegend = FALSE)
+#fct_reorder reorders the states based on their population
+
+plot_ly(data = AmesHousing, type = "scatter", mode = "markers", 
+        x = ~GrLivArea, y = ~TotRmsAbvGrd, frame = ~round(YearBuilt,-1),
+        showlegend = FALSE) %>%
+  animation_opts(frame = 1000, easing = "elastic", redraw = FALSE)
+
+#frame argument controls the speed in the animation_opts function
+#easing argument changes how the frames transition
+#redraw argument can improve the performance of laggy annimations by not entirely redrawing the plot
+
+fight_songs <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/fight-songs/fight-songs.csv")
+colnames(fight_songs)
+songs_by_year <- group_by(fight_songs, year)
+colnames(songs_by_trope)
+songs_per_trope <- songs_by_year %>% count(trope_count)
+colnames(songs_per_trope)
+plot_ly(data = songs_by_year, type = "bar", 
+        x = ~trope_count, y = ~bpm, frame = ~fct_reorder(school, trope_count),
+        showlegend = FALSE) %>%
+  animation_opts(frame = 1000, easing = "elastic", redraw = FALSE)
+
+
