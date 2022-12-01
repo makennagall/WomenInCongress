@@ -6,65 +6,62 @@ library(shiny)
 library(plotly)
 library(forcats)
 library(dplyr)
+library(htmlwidgets)
+library(ggplot2)
+
 Frequency <- read.csv('https://raw.githubusercontent.com/makennagall/WomenInCongress/main/frequency.csv')
 WomenPerSession <- read.csv('https://raw.githubusercontent.com/makennagall/WomenInCongress/main/WomenPerSession.csv')
 AllOutput <- read.csv('https://raw.githubusercontent.com/makennagall/WomenInCongress/main/compiledNewOutputs.csv')
 TermsCount <- read.csv('https://raw.githubusercontent.com/makennagall/WomenInCongress/main/termsCountNew.csv')
-colnames(Frequency)
+WomenPerSession <- read.csv("https://raw.githubusercontent.com/makennagall/WomenInCongress/main/WomenPerSession.csv")
+
+
+colnames(WomenPerSession)
 colnames(AllOutput)
-typeof(Frequency)
-termList = as.list(Frequency)
-termList$Term
+
+AllOutput$Congress <- as.integer(AllOutput$Congress)
+WomenPerSession$Congress <- as.integer(WomenPerSession$Congress)
+#add a date variable that contains day, month and year and is a Date object:
 AllOutput <- mutate(AllOutput, date = paste(LatestActionMonth,"/",LatestActionDay,"/",LatestActionYear, sep = ""))
 AllOutput$date <- as.Date(AllOutput$date, format = "%m/%d/%Y")
 #add a DayMonth variable that is only the day and month so they can be displayed on the y axis:
 AllOutput <- mutate(AllOutput, DayMonth = format(as.Date(date), "%m-%d"))
-# Define UI for application that draws a histogram
-ui <- fluidPage(
-  
-  # Application title
-  titlePanel("Women in Congress"),
-  
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(
-    position = "left",
-    sidebarPanel(
-      checkboxGroupInput("termSelected", h3("Term List"),
-                   choices = termList$Term, selected = termList$Term),
+joinedData <- left_join(x = AllOutput, y = WomenPerSession, by = "Congress")
+termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress")
 
-      sliderInput("Congress",
-                  "Congressional Sessions:",
-                  min = 82,
-                  max = 117,
-                  value = c(82,117))),
-    
-    # Show a plot of the generated distribution
-    mainPanel(
-      h1("Women in Congress Graph", align = 'center'),
-      plotlyOutput("womenPlot")
+
+ui <- fluidPage(
+  fluidRow(
+    column(width = 4,
+           plotOutput("plot1", height = 300,
+                      click = "plot1_click",
+                      brush = brushOpts(
+                        id = "plot1_brush"
+                      )
+                  )
+           )
+  ),
+  fluidRow(
+    column(width = 6,
+           h4("Points near click"),
+           verbatimTextOutput("click_info")
+    ),
+    column(width = 6,
+           h4("Brushed points"),
+           verbatimTextOutput("brush_info")
     )
   )
 )
-
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-  output$plotly_click <- renderText(as.character(event_data("plotly_click")))
-  
-  output$womenPlot <- renderPlotly({
-    #draw plotly graph:
-    fig <- plot_ly(
-      data = AllOutput, 
-      type = "scatter", 
-      mode = "markers",
-      x = ~LatestActionYear, 
-      y = ~DayMonth, 
-      color = ~SponsorParty, 
-      legendgrouptitle = "Party",
-      hoverinfo = 'text',
-      text = ~paste("Title:", Title, "<br>", "URL:", URL))
-      })
-  output$test <- renderText("hiiiiiii")
+server <- function(input, output){
+  output$plot1 <- renderPlot({
+    ggplot(Frequency, aes(Term, Frequency)) + geom_point()
+  })
+  output$click_info <- renderPrint({
+    nearPoints(Frequency, input$plot1_click, addDist = FALSE)
+  })
+  output$brush_info <- renderPrint({
+    brushedPoints(Frequency, input$plot1_brush)
+  })
 }
-
 # Run the application 
 shinyApp(ui = ui, server = server)

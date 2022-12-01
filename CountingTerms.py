@@ -12,6 +12,7 @@ def main():
     url = sys.argv[1]
     data = urlopen(url)
     cr = csv.reader(codecs.iterdecode(data, "utf-8"))
+    NumberFile = open("NewBillNumbers.csv", 'w')
     TERMSLIST_FILE = sys.argv[2]
     TERMSLIST = []
     for line in open(TERMSLIST_FILE, "r"):
@@ -25,7 +26,9 @@ def main():
     outputFile.write('\n')
     termDict = createDictionary([], TERMSLIST)
     countDict = createDictionary(0, TERMSLIST)
+    numDict = {}
     for line in cr:
+        print(line)
         for term in TERMSLIST:
             if term in line[0].lower():
                 line.append(term)
@@ -34,12 +37,23 @@ def main():
                 outputFile.write('|'.join(str(e) for e in line))
                 outputFile.write('\n')
                 line = line[:-1]
+        for num in range(82,118):
+            if str(num) == line[1]:
+                if num in numDict:
+                    numDict[num] = numDict[num] + 1
+                else:
+                    numDict[num] = 1
     print("countDict")
     print(countDict)
+    print("numDict")
+    print(numDict)
     frequencyFile = open('frequency.csv', 'w')
     frequencyFile.write("Term,Frequency\n")
     for key in countDict:
         frequencyFile.write(key + "," + str(countDict[key]) + "\n")
+    NumberFile.write("Congress,NumBills\n")
+    for key in numDict:
+        NumberFile.write(str(key) + "," + str(numDict[key]) + "\n")
 def printOutput(termDict, TERMSLIST):
     for term in TERMSLIST:
         print(term)
