@@ -31,8 +31,7 @@ View(TermsCount)
 colnames(WomenPerSession)
 colnames(AllOutput)
 AllOutput$Congress
-WomenPerSession$Congress <- as.character(WomenPerSession$Congress)
-TermsCount$Congress <- as.character(TermsCount$Congress)
+
 #add a date variable that contains day, month and year and is a Date object:
 AllOutput <- mutate(AllOutput, date = paste(LatestActionMonth,"/",LatestActionDay,"/",LatestActionYear, sep = ""))
 AllOutput$date <- as.Date(AllOutput$date, format = "%m/%d/%Y")
@@ -44,6 +43,8 @@ termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress"
 #x axis: Congressional Session
 #y axis: percent of the bills written that contained a key term pertaining to women or other gender minorities
 #color: total number of women in congress for that session
+WomenPerSession$Congress <- as.integer(WomenPerSession$Congress)
+TermsCount$Congress <- as.character(TermsCount$Congress)
 BillNumbersAndWomenPerSesh <- left_join(x = WomenPerSession, y = AllBillsNumbers, by = "Congress")
 plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
         x = ~Congress, y = ~percentWomen, color = ~Total.Women,
@@ -60,8 +61,6 @@ plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
   layout(title = "Congress v. Percentage of Bills", yaxis = list(title = "Bills that Contain Terms Related to Women"),
          legend = list(title = list( text = "<br>Total<br>Women<br>")))
 #reformats the year to contain only the month and day, so it can be more easily displayed in a timeline format
-
-WomenPerSession$Congress <- as.integer(WomenPerSession$Congress)
 
 plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
         x = ~Congress, y = ~Total.Women, color = ~percentWomen,
@@ -95,10 +94,12 @@ termDataJoined$date <- as.Date(termDataJoined$date, format = "%m/%d/%Y")
 termDataJoined <- mutate(termDataJoined, DayMonth = format(as.Date(date), "%m-%d"))
 
 colnames(termDataJoined)
+termDataJoined$Total.Women
 plot_ly(data = termDataJoined, type = "scatter", mode = "markers",
-        x = ~LatestActionYear, y = ~DayMonth, color = ~term,
+        x = ~LatestActionYear, y = ~DayMonth, color = ~Term,
         hoverinfo = 'text',
-        text = ~paste("Title:", title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, "<br>Latest Action: ", LatestAction))
+        text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, 
+                      "<br>Sponsor Party: ", Sponsor.Party))
 View(termDataJoined)
 plot_ly(data = termDataJoined, 
         type = "scatter", 
