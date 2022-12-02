@@ -26,7 +26,8 @@ TermsCount <- read.csv('https://raw.githubusercontent.com/makennagall/WomenInCon
 
 colnames(OldAllOutput)
 colnames(OldAllBillsNumbers)
-colnames(OldtermsCount)
+colnames(TermsCount)
+View(TermsCount)
 colnames(WomenPerSession)
 colnames(AllOutput)
 AllOutput$Congress
@@ -98,7 +99,7 @@ plot_ly(data = termDataJoined, type = "scatter", mode = "markers",
         x = ~LatestActionYear, y = ~DayMonth, color = ~term,
         hoverinfo = 'text',
         text = ~paste("Title:", title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, "<br>Latest Action: ", LatestAction))
-
+View(termDataJoined)
 plot_ly(data = termDataJoined, 
         type = "scatter", 
         mode = "markers",
