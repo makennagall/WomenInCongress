@@ -28,6 +28,10 @@ AllOutput$date <- as.Date(AllOutput$date, format = "%m/%d/%Y")
 AllOutput <- mutate(AllOutput, DayMonth = format(as.Date(date), "%m-%d"))
 joinedData <- left_join(x = AllOutput, y = WomenPerSession, by = "Congress")
 termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress")
+termDataJoined <- mutate(termDataJoined, date = paste(LatestActionMonth,"/",LatestActionDay,"/",LatestActionYear, sep = ""))
+termDataJoined$date <- as.Date(termDataJoined$date, format = "%m/%d/%Y")
+#add a DayMonth variable that is only the day and month so they can be displayed on the y axis:
+termDataJoined <- mutate(termDataJoined, DayMonth = format(as.Date(date), "%m-%d"))
 
 
 ui <- fluidPage(
@@ -50,7 +54,8 @@ ui <- fluidPage(
            h4("Brushed points"),
            verbatimTextOutput("brush_info")
     )
-  )
+  ),
+  plotlyOutput("plot2")
 )
 server <- function(input, output){
   output$plot1 <- renderPlot({
@@ -61,6 +66,14 @@ server <- function(input, output){
   })
   output$brush_info <- renderPrint({
     brushedPoints(Frequency, input$plot1_brush)
+  })
+  output$plot2 <- renderPlot({
+
+    plot_ly(data = termDataJoined, type = "scatter", mode = "markers",
+            x = ~LatestActionYear, y = ~DayMonth, color = ~Term,
+            hoverinfo = 'text',
+            text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, 
+                          "<br>Sponsor Party: ", Sponsor.Party))
   })
 }
 # Run the application 

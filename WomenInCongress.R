@@ -37,14 +37,16 @@ AllOutput <- mutate(AllOutput, date = paste(LatestActionMonth,"/",LatestActionDa
 AllOutput$date <- as.Date(AllOutput$date, format = "%m/%d/%Y")
 #add a DayMonth variable that is only the day and month so they can be displayed on the y axis:
 AllOutput <- mutate(AllOutput, DayMonth = format(as.Date(date), "%m-%d"))
-joinedData <- left_join(x = AllOutput, y = WomenPerSession, by = "Congress")
-termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress")
+
 #A graph with:
 #x axis: Congressional Session
 #y axis: percent of the bills written that contained a key term pertaining to women or other gender minorities
 #color: total number of women in congress for that session
 WomenPerSession$Congress <- as.integer(WomenPerSession$Congress)
-TermsCount$Congress <- as.character(TermsCount$Congress)
+TermsCount$Congress <- as.integer(TermsCount$Congress)
+joinedData <- left_join(x = AllOutput, y = WomenPerSession, by = "Congress")
+joinedData$Congress <- as.integer(joinedData$Congress)
+termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress")
 BillNumbersAndWomenPerSesh <- left_join(x = WomenPerSession, y = AllBillsNumbers, by = "Congress")
 plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
         x = ~Congress, y = ~percentWomen, color = ~Total.Women,
@@ -58,7 +60,7 @@ plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
         x = ~Congress, y = ~YesBills, color = ~Total.Women,
         hoverinfo = 'text',
         text = ~paste("Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", Total.Women))%>%
-  layout(title = "Congress v. Percentage of Bills", yaxis = list(title = "Bills that Contain Terms Related to Women"),
+  layout(title = "Congress v. Number of Bills", yaxis = list(title = "Bills that Contain Terms Related to Women"),
          legend = list(title = list( text = "<br>Total<br>Women<br>")))
 #reformats the year to contain only the month and day, so it can be more easily displayed in a timeline format
 
@@ -80,7 +82,7 @@ plot_ly(data = AllOutput, type = "scatter", mode = "markers",
 
 #left: returns all cases from the left (x) data table regardless of whether it has a matching y variable
 
-joinedData$Congress <- as.integer(joinedData$Congress)
+
 plot_ly(data = joinedData, type = "scatter", mode = "markers",
         x = ~Congress, y = ~DayMonth, color = ~Total.Women,
         hoverinfo = 'text',
@@ -88,18 +90,7 @@ plot_ly(data = joinedData, type = "scatter", mode = "markers",
                       "<br>Sponsor Party: ", SponsorParty))
 
 #add a date variable that contains day, month and year and is a Date object:
-termDataJoined <- mutate(termDataJoined, date = paste(LatestActionMonth,"/",LatestActionDay,"/",LatestActionYear, sep = ""))
-termDataJoined$date <- as.Date(termDataJoined$date, format = "%m/%d/%Y")
-#add a DayMonth variable that is only the day and month so they can be displayed on the y axis:
-termDataJoined <- mutate(termDataJoined, DayMonth = format(as.Date(date), "%m-%d"))
 
-colnames(termDataJoined)
-termDataJoined$Total.Women
-plot_ly(data = termDataJoined, type = "scatter", mode = "markers",
-        x = ~LatestActionYear, y = ~DayMonth, color = ~Term,
-        hoverinfo = 'text',
-        text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", Total.Women, "<br>Sponsor: ", Sponsor, 
-                      "<br>Sponsor Party: ", Sponsor.Party))
 View(termDataJoined)
 plot_ly(data = termDataJoined, 
         type = "scatter", 
