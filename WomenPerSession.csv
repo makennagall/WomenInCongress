@@ -1,4 +1,4 @@
-Congress,Start Year,End Year,Women in the Senate,Senate Democrats,Senate Republicans,Women in the House, House Democrats,House Republicans,Total Women,Total Democrats,Total Republicans
+Congress,StartYear,EndYear,WomeninSenate,SenateDemocrats,SenateRepublicans,WomeninHouse,HouseDemocrats,HouseRepublicans,TotalWomen,TotalDemocrats,TotalRepublicans
 65,1917,1919,0,0,0,1,0,1,1,0,1
 66,1919,1921,0,0,0,0,0,0,0,0,0
 67,1921,1923,1,1,0,3,0,3,4,1,3
