@@ -12,6 +12,8 @@ def main():
     url = sys.argv[1]
     data = urlopen(url)
     cr = csv.reader(codecs.iterdecode(data, "utf-8"))
+    billsData = urlopen('https://raw.githubusercontent.com/makennagall/WomenInCongress/main/compiledNewAllBills.csv')
+    allBills = csv.reader(codecs.iterdecode(billsData, "utf-8"))
     NumberFile = open("NewBillNumbers.csv", 'w')
     TERMSLIST_FILE = sys.argv[2]
     TERMSLIST = []
@@ -24,11 +26,19 @@ def main():
     outputFile = open("termsCountPipeSep.txt", "w")
     outputFile.write('|'.join(str(e) for e in colnames))
     outputFile.write('\n')
+    #termDict: keeps list of all bills for each term, does not go into any output file
     termDict = createDictionary([], TERMSLIST)
+    #countDict: keeps track of how many bills for each valid term
     countDict = createDictionary(0, TERMSLIST)
-    numDict = {}
+    #yesDict: keeps track of how many bills contain a term for each congress
+    yesDict = {}
+    #totalDict: keeps track of total number of bills for each congress
+    totalDict = {}
     for line in cr:
-        print(line)
+        if line[1] in yesDict:
+            yesDict[line[1]] = yesDict[line[1]] + 1
+        else:
+            yesDict[line[1]] = 1
         for term in TERMSLIST:
             if term in line[0].lower():
                 line.append(term)
@@ -37,23 +47,24 @@ def main():
                 outputFile.write('|'.join(str(e) for e in line))
                 outputFile.write('\n')
                 line = line[:-1]
-        for num in range(82,118):
-            if str(num) == line[1]:
-                if num in numDict:
-                    numDict[num] = numDict[num] + 1
-                else:
-                    numDict[num] = 1
+
+    for line in allBills:
+        if line[1] in totalDict:
+            totalDict[line[1]] = totalDict[line[1]] + 1
+        else:
+            totalDict[line[1]] = 1
     print("countDict")
-    print(countDict)
+    print(yesDict)
     print("numDict")
-    print(numDict)
+    print(yesDict)
     frequencyFile = open('frequency.csv', 'w')
     frequencyFile.write("Term,Frequency\n")
     for key in countDict:
         frequencyFile.write(key + "," + str(countDict[key]) + "\n")
-    NumberFile.write("Congress,NumBills\n")
-    for key in numDict:
-        NumberFile.write(str(key) + "," + str(numDict[key]) + "\n")
+    NumberFile.write("Congress,YesBills,Total\n")
+    for key in totalDict:
+        if key != 'Congress':
+            NumberFile.write(key + "," + str(yesDict[key]) + "," + str(totalDict[key])+ "\n")
 def printOutput(termDict, TERMSLIST):
     for term in TERMSLIST:
         print(term)
