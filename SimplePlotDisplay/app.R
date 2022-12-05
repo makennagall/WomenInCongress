@@ -70,6 +70,7 @@ server <- function(input, output) {
     x = ~Congress, 
     y = ~percentWomen, 
     color = ~TotalWomen,
+    colors = c("slategray2", "mediumpurple1"),
     hoverinfo = 'text',
     text = ~paste("Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout( 
     legend = list(title = list( text = "<br>Total<br>Women<br>")),
@@ -82,6 +83,7 @@ server <- function(input, output) {
     x = ~Congress, 
     y = ~YesBills, 
     color = ~TotalWomen,
+    colors = c("slategray2", "mediumpurple1"),
     hoverinfo = 'text',
     text = ~paste("Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout(
     legend = list(orientation = 'h', title = list(text = 'Women<br>in Congress<br>')), 
@@ -90,6 +92,7 @@ server <- function(input, output) {
   
   output$numWomenPlot <- renderPlotly({plot_ly(data = BillNumbersAndWomenPerSesh, type = "bar",
                                  x = ~Congress, y = ~TotalWomen, color = ~percentWomen,
+                                 colors = c("slategray2", "mediumpurple1"),
                                  hoverinfo = 'text',
                                  text = ~paste("Women in the House: ", WomeninHouse, "<br>", "Women in the Senate: ", WomeninSenate))%>%layout(title = "Congress v. Women in Congress", yaxis = list(title = "Women in Congress"),
            legend = list(title = list( text = "<br>Percent<br>of Bills<br>")))})
@@ -97,7 +100,8 @@ server <- function(input, output) {
   output$byPartyPlot <- renderPlotly({plot_ly(data = AllOutput, type = "scatter", mode = "markers",
                                 x = ~LatestActionYear, 
                                 y = ~DayMonth, 
-                                color = ~SponsorParty, 
+                                color = ~SponsorParty,
+                                colors = c("blue", "green", "gray", "red"),
                                 hoverinfo = 'text',
                                 text = ~paste("Title:", Title, "<br>", "URL:", URL, "<br>Sponsor: ", Sponsor))})
   
@@ -106,7 +110,7 @@ server <- function(input, output) {
                                                x = ~Congress, 
                                                y = ~DayMonth, 
                                                color = ~TotalWomen,
-                                               colors = c("slategray", "thistle3", "plum", "mediumpurple"),
+                                               colors = c("slategray2", "mediumpurple1"),
                                                hoverinfo = 'text',
                                                text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
                                                              "<br>Sponsor Party: ", SponsorParty))%>%layout(
@@ -119,7 +123,8 @@ server <- function(input, output) {
   output$TermFrequencyPlot <- renderPlotly({plot_ly(data = Frequency, 
                                       type = 'bar', 
                                       x = ~fct_reorder(Term, Frequency), 
-                                      y = ~Frequency, 
+                                      y = ~Frequency,
+                                      colors = c("slategray2"),
                                       hoverinfo = 'text',
                                       text = ~paste("Term:", Term, "<br>Frequency", Frequency))%>%layout(
     title = "Frequency of Term Usage",
