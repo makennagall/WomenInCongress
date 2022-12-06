@@ -5,9 +5,9 @@ account: d3jvtp-makennagall
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7811121
-bundleId: 6597862
+bundleId: 6597932
 url: https://d3jvtp-makennagall.shinyapps.io/WomenInCongress/
-when: 1670309037.81977
-lastSyncTime: 1670309037.81978
+when: 1670310386.14196
+lastSyncTime: 1670310386.14198
 asMultiple: FALSE
 asStatic: FALSE
