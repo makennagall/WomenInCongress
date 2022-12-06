@@ -103,7 +103,8 @@ server <- function(input, output) {
                                 color = ~SponsorParty,
                                 colors = c("blue", "green", "gray", "red"),
                                 hoverinfo = 'text',
-                                text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL:", URL, "<br>Sponsor: ", Sponsor))})
+                                text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, 
+                                              "<br>Latest Action: ", LatestAction,"<br>URL:", URL, "<br>Sponsor: ", Sponsor))})
   
   
   output$indBillsCongressionalWomen <- renderPlotly({plot_ly(data = joinedData, type = "scatter", mode = "markers",
@@ -112,7 +113,8 @@ server <- function(input, output) {
                                                color = ~TotalWomen,
                                                colors = c("slategray2", "mediumpurple1"),
                                                hoverinfo = 'text',
-                                               text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
+                                               text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, 
+                                                             "<br>Latest Action: ", LatestAction,"<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
                                                              "<br>Sponsor Party: ", SponsorParty))%>%layout(
     legend = list(title = list(text = "Women<br>in Congress")),
     title = "Timeline of Bills about Women<br>and Number of Women in Congress",
@@ -140,7 +142,8 @@ server <- function(input, output) {
                                           'mediumturquoise', "darkseagreen3", "cadetblue3", 'darksalmon', "aquamarine1", "darkolivegreen2", "gold","deepskyblue", "indianred1", 
                                           "lightgoldenrod2", "lightpink", "orange1", "mediumaquamarine", "pink2",  "mediumpurple1", "lightskyblue1", "darkslategray1", "chocolate1"),
                                hoverinfo = 'text',
-                               text = ~paste("Title:", Title,"<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
+                               text = ~paste("Title:", Title,"<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, 
+                                             "<br>Latest Action: ", LatestAction, "<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
                                              "<br>Sponsor Party: ", SponsorParty))%>%layout(
     legend = list(title = list(text = "Terms")),
     title = "Timeline of Term Usage",
