@@ -35,4 +35,4 @@
 
 <em>newAllBills</em> and <em>newOutputs</em> contains data from the most recent execution separated by congressional session.
 
-<em>SimplePlotDisplay</em> is a folder that contains a very very rough draft of a shiny app
+<em>SimplePlotDisplay</em> is a folder that contains a very simple shiny app
