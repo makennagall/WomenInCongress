@@ -38,7 +38,7 @@ TermsCount <- mutate(TermsCount, DayMonth = format(as.Date(Date), "%m-%d"))
 joinedData <- left_join(x = AllOutput, y = WomenPerSession, by = "Congress")
 termDataJoined <- left_join(x = TermsCount, y = WomenPerSession, by = "Congress")
 termDataJoined <- left_join(x = termDataJoined, y = Frequency, by = "Term")
-BillNumbersAndWomenPerSesh <- left_join(x = WomenPerSession, y = AllBillsNumbers, by = "Congress")
+BillNumbersAndWomenPerSesh <- left_join(x = AllBillsNumbers, y = WomenPerSession, by = "Congress")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -72,7 +72,7 @@ server <- function(input, output) {
     color = ~TotalWomen,
     colors = c("slategray2", "mediumpurple1"),
     hoverinfo = 'text',
-    text = ~paste("Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout( 
+    text = ~paste("Congress: ", Congress, "<br>Years: ", StartYear, "-", EndYear, "<br>Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout( 
     legend = list(title = list( text = "<br>Total<br>Women<br>")),
     title = "Congress v. Percentage of Bills", 
     yaxis = list(title = "Bills that Contain Terms Related to Women (Percent)"))})
@@ -85,7 +85,7 @@ server <- function(input, output) {
     color = ~TotalWomen,
     colors = c("slategray2", "mediumpurple1"),
     hoverinfo = 'text',
-    text = ~paste("Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout(
+    text = ~paste("Congress: ", Congress, "<br>Years: ", StartYear, "-", EndYear, "<br>Total Bills: ", Total, "<br>", "Women in the Bills: ", YesBills, "<br>Women in Congress: ", TotalWomen))%>% layout(
     legend = list(orientation = 'h', title = list(text = 'Women<br>in Congress<br>')), 
     title = "Congress v. Number of Bills", 
     yaxis = list(title = "Number of Bills that Contain Terms Related to Women"))})
@@ -94,7 +94,7 @@ server <- function(input, output) {
                                  x = ~Congress, y = ~TotalWomen, color = ~percentWomen,
                                  colors = c("slategray2", "mediumpurple1"),
                                  hoverinfo = 'text',
-                                 text = ~paste("Women in the House: ", WomeninHouse, "<br>", "Women in the Senate: ", WomeninSenate))%>%layout(title = "Congress v. Women in Congress", yaxis = list(title = "Women in Congress"),
+                                 text = ~paste("Congress: ", Congress, "<br>Years: ", StartYear, "-", EndYear, "<br>Women in the House: ", WomeninHouse, "<br>", "Women in the Senate: ", WomeninSenate, "<br>Percent of Bills about Women: ", percentWomen, "<br>Bills About Women: ", YesBills))%>%layout(title = "Congress v. Women in Congress", yaxis = list(title = "Women in Congress"),
            legend = list(title = list( text = "<br>Percent<br>of Bills<br>")))})
   
   output$byPartyPlot <- renderPlotly({plot_ly(data = AllOutput, type = "scatter", mode = "markers",
@@ -103,7 +103,7 @@ server <- function(input, output) {
                                 color = ~SponsorParty,
                                 colors = c("blue", "green", "gray", "red"),
                                 hoverinfo = 'text',
-                                text = ~paste("Title:", Title, "<br>", "URL:", URL, "<br>Sponsor: ", Sponsor))})
+                                text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL:", URL, "<br>Sponsor: ", Sponsor))})
   
   
   output$indBillsCongressionalWomen <- renderPlotly({plot_ly(data = joinedData, type = "scatter", mode = "markers",
@@ -112,7 +112,7 @@ server <- function(input, output) {
                                                color = ~TotalWomen,
                                                colors = c("slategray2", "mediumpurple1"),
                                                hoverinfo = 'text',
-                                               text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
+                                               text = ~paste("Title:", Title, "<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
                                                              "<br>Sponsor Party: ", SponsorParty))%>%layout(
     legend = list(title = list(text = "Women<br>in Congress")),
     title = "Timeline of Bills about Women<br>and Number of Women in Congress",
@@ -140,7 +140,7 @@ server <- function(input, output) {
                                           'mediumturquoise', "darkseagreen3", "cadetblue3", 'darksalmon', "aquamarine1", "darkolivegreen2", "gold","deepskyblue", "indianred1", 
                                           "lightgoldenrod2", "lightpink", "orange1", "mediumaquamarine", "pink2",  "mediumpurple1", "lightskyblue1", "darkslategray1", "chocolate1"),
                                hoverinfo = 'text',
-                               text = ~paste("Title:", Title, "<br>", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
+                               text = ~paste("Title:", Title,"<br>Date of Latest Action: ", LatestActionMonth, "/", LatestActionDay, "/", LatestActionYear, "<br>URL: ", URL, "<br>Total Women: ", TotalWomen, "<br>Sponsor: ", Sponsor, 
                                              "<br>Sponsor Party: ", SponsorParty))%>%layout(
     legend = list(title = list(text = "Terms")),
     title = "Timeline of Term Usage",
